@@ -28,96 +28,94 @@ TODO(description)
 * Author(s): Dean Miller
 """
 
-from micropython import const
-from adafruit_bus_device.i2c_device import I2CDevice
+#from micropython import const
+#from adafruit_bus_device.i2c_device import I2CDevice
 
 """
 BITS
 """
-INA219_READ                            = const(0x01)
+INA219_READ                            = 0x01
 
 
 """
 CONFIG REGISTER (R/W)
 """
-INA219_REG_CONFIG                      = const(0x00)
-INA219_CONFIG_RESET                    = const(0x8000)  # Reset Bit
+INA219_REG_CONFIG                      = 0x00
+INA219_CONFIG_RESET                    = 0x8000  # Reset Bit
 
-INA219_CONFIG_BVOLTAGERANGE_MASK       = const(0x2000)  # Bus Voltage Range Mask
-INA219_CONFIG_BVOLTAGERANGE_16V        = const(0x0000)  # 0-16V Range
-INA219_CONFIG_BVOLTAGERANGE_32V        = const(0x2000)  # 0-32V Range
+INA219_CONFIG_BVOLTAGERANGE_MASK       = 0x2000  # Bus Voltage Range Mask
+INA219_CONFIG_BVOLTAGERANGE_16V        = 0x0000  # 0-16V Range
+INA219_CONFIG_BVOLTAGERANGE_32V        = 0x2000  # 0-32V Range
 
-INA219_CONFIG_GAIN_MASK                = const(0x1800)  # Gain Mask
-INA219_CONFIG_GAIN_1_40MV              = const(0x0000)  # Gain 1, 40mV Range
-INA219_CONFIG_GAIN_2_80MV              = const(0x0800)  # Gain 2, 80mV Range
-INA219_CONFIG_GAIN_4_160MV             = const(0x1000)  # Gain 4, 160mV Range
-INA219_CONFIG_GAIN_8_320MV             = const(0x1800)  # Gain 8, 320mV Range
+INA219_CONFIG_GAIN_MASK                = 0x1800  # Gain Mask
+INA219_CONFIG_GAIN_1_40MV              = 0x0000  # Gain 1, 40mV Range
+INA219_CONFIG_GAIN_2_80MV              = 0x0800  # Gain 2, 80mV Range
+INA219_CONFIG_GAIN_4_160MV             = 0x1000  # Gain 4, 160mV Range
+INA219_CONFIG_GAIN_8_320MV             = 0x1800  # Gain 8, 320mV Range
 
-INA219_CONFIG_BADCRES_MASK             = const(0x0780)  # Bus ADC Resolution Mask
-INA219_CONFIG_BADCRES_9BIT             = const(0x0080)  # 9-bit bus res = 0..511
-INA219_CONFIG_BADCRES_10BIT            = const(0x0100)  # 10-bit bus res = 0..1023
-INA219_CONFIG_BADCRES_11BIT            = const(0x0200)  # 11-bit bus res = 0..2047
-INA219_CONFIG_BADCRES_12BIT            = const(0x0400)  # 12-bit bus res = 0..4097
+INA219_CONFIG_BADCRES_MASK             = 0x0780  # Bus ADC Resolution Mask
+INA219_CONFIG_BADCRES_9BIT             = 0x0080  # 9-bit bus res = 0..511
+INA219_CONFIG_BADCRES_10BIT            = 0x0100  # 10-bit bus res = 0..1023
+INA219_CONFIG_BADCRES_11BIT            = 0x0200  # 11-bit bus res = 0..2047
+INA219_CONFIG_BADCRES_12BIT            = 0x0400  # 12-bit bus res = 0..4097
 
-INA219_CONFIG_SADCRES_MASK             = const(0x0078)  # Shunt ADC Resolution and Averaging Mask
-INA219_CONFIG_SADCRES_9BIT_1S_84US     = const(0x0000)  # 1 x 9-bit shunt sample
-INA219_CONFIG_SADCRES_10BIT_1S_148US   = const(0x0008)  # 1 x 10-bit shunt sample
-INA219_CONFIG_SADCRES_11BIT_1S_276US   = const(0x0010)  # 1 x 11-bit shunt sample
-INA219_CONFIG_SADCRES_12BIT_1S_532US   = const(0x0018)  # 1 x 12-bit shunt sample
-INA219_CONFIG_SADCRES_12BIT_2S_1060US  = const(0x0048)	 # 2 x 12-bit shunt samples averaged together
-INA219_CONFIG_SADCRES_12BIT_4S_2130US  = const(0x0050)  # 4 x 12-bit shunt samples averaged together
-INA219_CONFIG_SADCRES_12BIT_8S_4260US  = const(0x0058)  # 8 x 12-bit shunt samples averaged together
-INA219_CONFIG_SADCRES_12BIT_16S_8510US = const(0x0060)  # 16 x 12-bit shunt samples averaged together
-INA219_CONFIG_SADCRES_12BIT_32S_17MS   = const(0x0068)  # 32 x 12-bit shunt samples averaged together
-INA219_CONFIG_SADCRES_12BIT_64S_34MS   = const(0x0070)  # 64 x 12-bit shunt samples averaged together
-INA219_CONFIG_SADCRES_12BIT_128S_69MS  = const(0x0078)  # 128 x 12-bit shunt samples averaged together
+INA219_CONFIG_SADCRES_MASK             = 0x0078  # Shunt ADC Resolution and Averaging Mask
+INA219_CONFIG_SADCRES_9BIT_1S_84US     = 0x0000  # 1 x 9-bit shunt sample
+INA219_CONFIG_SADCRES_10BIT_1S_148US   = 0x0008  # 1 x 10-bit shunt sample
+INA219_CONFIG_SADCRES_11BIT_1S_276US   = 0x0010  # 1 x 11-bit shunt sample
+INA219_CONFIG_SADCRES_12BIT_1S_532US   = 0x0018  # 1 x 12-bit shunt sample
+INA219_CONFIG_SADCRES_12BIT_2S_1060US  = 0x0048	 # 2 x 12-bit shunt samples averaged together
+INA219_CONFIG_SADCRES_12BIT_4S_2130US  = 0x0050  # 4 x 12-bit shunt samples averaged together
+INA219_CONFIG_SADCRES_12BIT_8S_4260US  = 0x0058  # 8 x 12-bit shunt samples averaged together
+INA219_CONFIG_SADCRES_12BIT_16S_8510US = 0x0060  # 16 x 12-bit shunt samples averaged together
+INA219_CONFIG_SADCRES_12BIT_32S_17MS   = 0x0068  # 32 x 12-bit shunt samples averaged together
+INA219_CONFIG_SADCRES_12BIT_64S_34MS   = 0x0070  # 64 x 12-bit shunt samples averaged together
+INA219_CONFIG_SADCRES_12BIT_128S_69MS  = 0x0078  # 128 x 12-bit shunt samples averaged together
 
-INA219_CONFIG_MODE_MASK                = const(0x0007)  # Operating Mode Mask
-INA219_CONFIG_MODE_POWERDOWN           = const(0x0000)
-INA219_CONFIG_MODE_SVOLT_TRIGGERED     = const(0x0001)
-INA219_CONFIG_MODE_BVOLT_TRIGGERED     = const(0x0002)
-INA219_CONFIG_MODE_SANDBVOLT_TRIGGERED = const(0x0003)
-INA219_CONFIG_MODE_ADCOFF              = const(0x0004)
-INA219_CONFIG_MODE_SVOLT_CONTINUOUS    = const(0x0005)
-INA219_CONFIG_MODE_BVOLT_CONTINUOUS    = const(0x0006)
-INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS = const(0x0007)	
+INA219_CONFIG_MODE_MASK                = 0x0007  # Operating Mode Mask
+INA219_CONFIG_MODE_POWERDOWN           = 0x0000
+INA219_CONFIG_MODE_SVOLT_TRIGGERED     = 0x0001
+INA219_CONFIG_MODE_BVOLT_TRIGGERED     = 0x0002
+INA219_CONFIG_MODE_SANDBVOLT_TRIGGERED = 0x0003
+INA219_CONFIG_MODE_ADCOFF              = 0x0004
+INA219_CONFIG_MODE_SVOLT_CONTINUOUS    = 0x0005
+INA219_CONFIG_MODE_BVOLT_CONTINUOUS    = 0x0006
+INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS = 0x0007
 
 
 """
 SHUNT VOLTAGE REGISTER (R)
 """
-INA219_REG_SHUNTVOLTAGE                = const(0x01)
+INA219_REG_SHUNTVOLTAGE                = 0x01
 
 
 """
 BUS VOLTAGE REGISTER (R)
 """
-INA219_REG_BUSVOLTAGE                  = const(0x02)
+INA219_REG_BUSVOLTAGE                  = 0x02
 
 
 """
 POWER REGISTER (R)
 """
-INA219_REG_POWER                       = const(0x03)
+INA219_REG_POWER                       = 0x03
 
 
 """
 CURRENT REGISTER (R)
 """
-INA219_REG_CURRENT                     = const(0x04)
+INA219_REG_CURRENT                     = 0x04
 
 
 """
 CALIBRATION REGISTER (R/W)
 """
-INA219_REG_CALIBRATION                 = const(0x05)
+INA219_REG_CALIBRATION                 = 0x05
 
 
 class INA219:
 
-	def __init__(self, i2c, addr=0x40):
-		self.i2c_device = I2CDevice(i2c, addr)
-
+	def __init__(self, i2c, addr):
 
 		self.i2c_addr = addr
 		self.current_divider_mA = 0
@@ -126,7 +124,7 @@ class INA219:
 		# Set chip to known config values to start
 	  	self.set_calibration_32V_2A()
 
-
+	'''
 	def write_register (self, reg, value):
 		seq = bytearray([reg, (value >> 8) & 0xFF, value & 0xFF])
 		with self.i2c_device as i2c:
@@ -141,7 +139,7 @@ class INA219:
 
 	  	value = (buf[1] << 8) | (buf[2])
 	  	return value
-
+	'''
 	"""
 	 
 		@brief  Configures to INA219 to be able to measure up to 32V and 2A
@@ -221,7 +219,7 @@ class INA219:
 		self.power_divider_mW = 2     # Power LSB = 1mW per bit (2/1)
 
 		# Set Calibration register to 'Cal' calculated above	
-		self.write_register(INA219_REG_CALIBRATION, self.cal_value)
+		#self.write_register(INA219_REG_CALIBRATION, self.cal_value)
 
 		# Set Config register to take into account the settings above
 		config = INA219_CONFIG_BVOLTAGERANGE_32V | \
@@ -229,7 +227,8 @@ class INA219:
 			INA219_CONFIG_BADCRES_12BIT | \
 			INA219_CONFIG_SADCRES_12BIT_1S_532US | \
 			INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS
-		self.write_register(INA219_REG_CONFIG, config)
+		self.config = config
+		#self.write_register(INA219_REG_CONFIG, config)
 
 
 	"""
@@ -313,7 +312,7 @@ class INA219:
 	  self.power_divider_mW = 1         # Power LSB = 800�W per bit
 
 	  # Set Calibration register to 'Cal' calculated above	
-	  self.write_register(INA219_REG_CALIBRATION, self.cal_value)
+	  # self.write_register(INA219_REG_CALIBRATION, self.cal_value)
 
 	  # Set Config register to take into account the settings above
 	  config = INA219_CONFIG_BVOLTAGERANGE_32V | \
@@ -321,7 +320,8 @@ class INA219:
 						INA219_CONFIG_BADCRES_12BIT | \
 						INA219_CONFIG_SADCRES_12BIT_1S_532US | \
 						INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS
-	  self.write_register(INA219_REG_CONFIG, config)
+	  self.config = config
+	  #self.write_register(INA219_REG_CONFIG, config)
 
 
 	def set_calibration_16V_400mA(self):
@@ -397,7 +397,7 @@ class INA219:
 	  self.power_divider_mW = 1     # Power LSB = 1mW per bit
 
 	  # Set Calibration register to 'Cal' calculated above 
-	  self.write_register(INA219_REG_CALIBRATION, self.cal_value)
+	  # self.write_register(INA219_REG_CALIBRATION, self.cal_value)
 	  
 	  # Set Config register to take into account the settings above
 	  config = INA219_CONFIG_BVOLTAGERANGE_16V | \
@@ -405,7 +405,8 @@ class INA219:
 						INA219_CONFIG_BADCRES_12BIT | \
 						INA219_CONFIG_SADCRES_12BIT_1S_532US | \
 						INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS
-	  self.write_register(INA219_REG_CONFIG, config) 
+	  self.config = config
+	  #self.write_register(INA219_REG_CONFIG, config) 
 
 
 	"""
@@ -413,11 +414,12 @@ class INA219:
 		@brief  Gets the raw bus voltage (16-bit signed integer, so +-32767)
 	
 	"""
-	def get_bus_voltage_raw(self):
-	  value = self.read_register(INA219_REG_BUSVOLTAGE)
+	def get_bus_voltage_raw(self, value):
+	  # value = self.read_register(INA219_REG_BUSVOLTAGE)
 
 	  # Shift to the right 3 to drop CNVR and OVF and multiply by LSB
-	  value = (self.to_signed(value >> 3) * 4)
+	  #value = (self.to_signed(value >> 3) * 4)
+	  value = (value >> 3) * 4
 	  return value
 
 
@@ -426,15 +428,17 @@ class INA219:
 		@brief  Gets the raw shunt voltage (16-bit signed integer, so +-32767)
 	
 	"""
+	'''
 	def get_shunt_voltage_raw(self):
 	  return self.to_signed(self.read_register(INA219_REG_SHUNTVOLTAGE))
-
+	'''
 
 	"""
 	 
 		@brief  Gets the raw current value (16-bit signed integer, so +-32767)
 	
 	"""
+	'''
 	def get_current_raw(self):
 
 	  # Sometimes a sharp load will reset the INA219, which will
@@ -445,15 +449,15 @@ class INA219:
 
 	  # Now we can safely read the CURRENT register!
 	  return self.to_signed(self.read_register(INA219_REG_CURRENT))
-
+	'''
 	 
 	"""
 	 
 		@brief  Gets the shunt voltage in mV (so +-327mV)
 	
 	"""
-	def get_shunt_voltage_mV(self):
-	  value = self.get_shunt_voltage_raw()
+	def get_shunt_voltage_mV(self, value):
+	  # value = self.get_shunt_voltage_raw()
 	  return value * 0.01
 
 
@@ -462,8 +466,8 @@ class INA219:
 		@brief  Gets the shunt voltage in volts
 	
 	"""
-	def get_bus_voltage_V(self):
-	  value = self.get_bus_voltage_raw()
+	def get_bus_voltage_V(self, value):
+	  # value = self.get_bus_voltage_raw()
 	  return value * 0.001
 
 
@@ -473,8 +477,9 @@ class INA219:
 				config settings and current LSB
 	
 	"""
-	def get_current_mA(self):
-	  valueDec = self.get_current_raw()
+	def get_current_mA(self, value):
+	  # valueDec = self.get_current_raw()
+	  valueDec = value
 	  valueDec /= self.current_divider_mA
 	  return valueDec
 
