@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 # The MIT License (MIT)
 #
 # Copyright (c) 2017 Dean Miller for Adafruit Industries
@@ -115,11 +117,18 @@ INA219_REG_CALIBRATION                 = 0x05
 
 class INA219:
 
-	def __init__(self, i2c, addr):
-
-		self.i2c_addr = addr
+	def __init__(self, name, addr):
+		self.name = name
+		self.addr = addr
 		self.current_divider_mA = 0
 		self.power_divider_mW = 0
+
+		# set registers
+		self.shunt_volt = INA219_REG_SHUNTVOLTAGE
+		self.bus_volt = INA219_REG_BUSVOLTAGE
+		self.power = INA219_REG_POWER
+		self.current = INA219_REG_CURRENT
+
 
 		# Set chip to known config values to start
 	  	self.set_calibration_32V_2A()
@@ -217,6 +226,7 @@ class INA219:
 		# Set multipliers to convert raw current/power values
 		self.current_divider_mA = 10  # Current LSB = 100uA per bit (1000/100 = 10)
 		self.power_divider_mW = 2     # Power LSB = 1mW per bit (2/1)
+		self.CalRegister = INA219_REG_CALIBRATION
 
 		# Set Calibration register to 'Cal' calculated above	
 		#self.write_register(INA219_REG_CALIBRATION, self.cal_value)
@@ -311,7 +321,8 @@ class INA219:
 	  self.current_divider_mA = 25      # Current LSB = 40uA per bit (1000/40 = 25)
 	  self.power_divider_mW = 1         # Power LSB = 800�W per bit
 
-	  # Set Calibration register to 'Cal' calculated above	
+	  # Set Calibration register to 'Cal' calculated above
+	  self.CalRegister = INA219_REG_CALIBRATION	
 	  # self.write_register(INA219_REG_CALIBRATION, self.cal_value)
 
 	  # Set Config register to take into account the settings above
@@ -396,7 +407,8 @@ class INA219:
 	  self.current_divider_mA = 20  # Current LSB = 50uA per bit (1000/50 = 20)
 	  self.power_divider_mW = 1     # Power LSB = 1mW per bit
 
-	  # Set Calibration register to 'Cal' calculated above 
+	  # Set Calibration register to 'Cal' calculated above
+	  self.CalRegister = INA219_REG_CALIBRATION 
 	  # self.write_register(INA219_REG_CALIBRATION, self.cal_value)
 	  
 	  # Set Config register to take into account the settings above
@@ -416,11 +428,44 @@ class INA219:
 	"""
 	def get_bus_voltage_raw(self, value):
 	  # value = self.read_register(INA219_REG_BUSVOLTAGE)
-
+	
 	  # Shift to the right 3 to drop CNVR and OVF and multiply by LSB
-	  #value = (self.to_signed(value >> 3) * 4)
-	  value = (value >> 3) * 4
-	  return value
+	  # value = (self.to_signed(value >> 3) * 4)
+	  x = (value >> 3) * 4
+	  return x
+
+
+	"""
+	 
+		@brief  Gets the raw current value (16-bit signed integer, so +-32767)
+	
+	"""
+	
+	def get_current_raw(self, value):
+
+	  # Sometimes a sharp load will reset the INA219, which will
+	  # reset the cal register, meaning CURRENT and POWER will
+	  # not be available ... athis by always setting a cal
+	  # value even if it's an unfortunate extra step
+	  # self.write_register(INA219_REG_CALIBRATION, self.cal_value)
+
+	  # Now we can safely read the CURRENT register!
+	  # return self.to_signed(self.read_register(INA219_REG_CURRENT))
+	  return self.to_signed(value)
+
+
+
+	"""
+	 
+		@brief  Gets the current value in mA, taking into account the
+				config settings and current LSB
+	
+	"""
+	def get_current_mA(self, value):
+	  # valueDec = self.get_current_raw()
+	  valueDec = value
+	  valueDec /= self.current_divider_mA
+	  return valueDec
 
 
 	"""
@@ -428,29 +473,12 @@ class INA219:
 		@brief  Gets the raw shunt voltage (16-bit signed integer, so +-32767)
 	
 	"""
-	'''
-	def get_shunt_voltage_raw(self):
-	  return self.to_signed(self.read_register(INA219_REG_SHUNTVOLTAGE))
-	'''
-
-	"""
-	 
-		@brief  Gets the raw current value (16-bit signed integer, so +-32767)
 	
-	"""
-	'''
-	def get_current_raw(self):
+	def get_shunt_voltage_raw(self, value):
+	  # return self.to_signed(self.read_register(INA219_REG_SHUNTVOLTAGE))
+	  return self.to_signed(value)
+	
 
-	  # Sometimes a sharp load will reset the INA219, which will
-	  # reset the cal register, meaning CURRENT and POWER will
-	  # not be available ... athis by always setting a cal
-	  # value even if it's an unfortunate extra step
-	  self.write_register(INA219_REG_CALIBRATION, self.cal_value)
-
-	  # Now we can safely read the CURRENT register!
-	  return self.to_signed(self.read_register(INA219_REG_CURRENT))
-	'''
-	 
 	"""
 	 
 		@brief  Gets the shunt voltage in mV (so +-327mV)
@@ -468,23 +496,12 @@ class INA219:
 	"""
 	def get_bus_voltage_V(self, value):
 	  # value = self.get_bus_voltage_raw()
-	  return value * 0.001
+	  return int(value) * 0.001
 
-
-	"""
-	 
-		@brief  Gets the current value in mA, taking into account the
-				config settings and current LSB
-	
-	"""
-	def get_current_mA(self, value):
-	  # valueDec = self.get_current_raw()
-	  valueDec = value
-	  valueDec /= self.current_divider_mA
-	  return valueDec
 
 	def to_signed(self, num):
 		v = num
 		if(num > 0x7FFF):
 			v -= 0x10000
+			v = int(v, 16)
 		return v
